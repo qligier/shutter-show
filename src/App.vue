@@ -25,11 +25,9 @@ async function triggerDirectorySelection() {
 </script>
 
 <template>
-  <button v-on:click="triggerDirectorySelection">Select Directory</button>
-
+  <button v-on:click="triggerDirectorySelection" v-if="photos == null">Select Directory</button>
   <Slideshow v-if="photos != null" :photos="photos"></Slideshow>
 </template>
 
 <style scoped>
-
 </style>
