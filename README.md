@@ -1,48 +1,9 @@
-# shutter-show
+# [ShutterShow](https://react.dev/) &middot; [![workflow status](https://github.com/qligier/shutter-show/actions/workflows/test.yml/badge.svg)](https://github.com/qligier/shutter-show/actions/workflows/test.yml) [![license](https://img.shields.io/badge/license-MIT-blue.svg)](MIT)
 
-This template should help get you started developing with Vue 3 in Vite.
+ShutterShow is a simple but visually pleasing web application that allows users to display a slideshow of photos.
 
-## Recommended IDE Setup
+## Features
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+- Read photos directly from your local filesystem, no upload required;
+- Navigate through photos using the <kbd>left arrow</kbd> and <kbd>right arrow</kbd> keys;
+- Display or hide common metadata (such as apertue, shutter speed and ISO) with the <kbd>space</kbd> key.
