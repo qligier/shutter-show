@@ -1,6 +1,3 @@
-/// <reference types="vite/client" />
-/// <reference types="wicg-file-system-access" />
-
 import { DirectoryPickerOptions, FileSystemDirectoryHandle } from 'wicg-file-system-access'
 
 declare global {
