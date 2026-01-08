@@ -22,6 +22,7 @@ img#photo {
   max-width: 100%;
   max-height: 100%;
   z-index: 10;
+  box-shadow: 0 0 4em #00000075;
 }
 
 #backdrop {
