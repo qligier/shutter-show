@@ -6,4 +6,8 @@ ShutterShow is a simple but visually pleasing web application that allows users 
 
 - Read photos directly from your local filesystem, no upload required;
 - Navigate through photos using the <kbd>left arrow</kbd> and <kbd>right arrow</kbd> keys;
-- Display or hide common metadata (such as apertue, shutter speed and ISO) with the <kbd>space</kbd> key.
+- Display or hide common metadata (such as aperture, shutter speed and ISO) with the <kbd>space</kbd> key.
+
+## Demo
+
+![Demo of the app usage](https://github.com/qligier/shutter-show/raw/refs/heads/master/.github/demo.avif)
