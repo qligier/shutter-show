@@ -3,35 +3,34 @@ import { type Ref, ref } from 'vue'
 import Slideshow from './components/Slideshow.vue'
 
 const photos: Ref<FileSystemFileHandle[] | null> = ref(null)
+const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
 async function triggerDirectorySelection() {
   try {
-    const dirHandle: FileSystemDirectoryHandle = await window.showDirectoryPicker();
+    const dirHandle: FileSystemDirectoryHandle = await window.showDirectoryPicker()
     const newPhotos: FileSystemFileHandle[] = []
     for await (const entry of dirHandle.values()) {
       if (entry.kind === 'file' && /\.(jpg|jpeg)$/i.test(entry.name)) {
-        newPhotos.push(entry);
+        newPhotos.push(entry)
       }
     }
-    newPhotos.sort((a: FileSystemFileHandle, b: FileSystemFileHandle): number => a.name.localeCompare(b.name));
+    newPhotos.sort((a: FileSystemFileHandle, b: FileSystemFileHandle): number =>
+      collator.compare(a.name, b.name),
+    )
 
     if (newPhotos.length > 0) {
-      photos.value = newPhotos;
+      photos.value = newPhotos
     }
   } catch (err) {
-    console.error('Error selecting directory:', err);
+    console.error('Error selecting directory:', err)
   }
 }
 </script>
 
 <template>
   <div class="center-wrap" v-if="photos == null">
-    <p>
-      Welcome to ShutterShow, a simple but visually appealing photo slideshow app.
-    </p>
-    <p>
-      Select a directory containing JPEG photos to get started.
-    </p>
+    <p>Welcome to ShutterShow, a simple but visually appealing photo slideshow app.</p>
+    <p>Select a directory containing JPEG photos to get started.</p>
     <ul>
       <li>Use <kbd>left arrow</kbd> and <kbd>right arrow</kbd> keys to navigate between photos;</li>
       <li>Use <kbd>space</kbd> to toggle the photo metadata and map.</li>
@@ -71,7 +70,10 @@ async function triggerDirectorySelection() {
   border-radius: 16px;
   font-weight: 800;
   cursor: pointer;
-  transition: transform .08s ease, box-shadow .12s ease, opacity .12s ease;
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.12s ease,
+    opacity 0.12s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -102,8 +104,8 @@ kbd {
   padding: 2px 4px;
 }
 
-p, ul {
-  margin: .6em 0;
+p,
+ul {
+  margin: 0.6em 0;
 }
-
 </style>
