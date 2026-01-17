@@ -33,7 +33,8 @@ async function triggerDirectorySelection() {
     <p>Select a directory containing JPEG photos to get started.</p>
     <ul>
       <li>Use <kbd>left arrow</kbd> and <kbd>right arrow</kbd> keys to navigate between photos;</li>
-      <li>Use <kbd>space</kbd> to toggle the photo metadata and map.</li>
+      <li>Use <kbd>space</kbd> to toggle the photo metadata and map;</li>
+      <li>Use <kbd>M</kbd> to open GoogleMaps at the photo's location.</li>
     </ul>
     <button
       v-on:click="triggerDirectorySelection"

@@ -185,6 +185,20 @@ async function ensureMapIsReady(lat: number, lon: number) {
     console.error('Failed to load maplibre-gl or initialize map', err)
   }
 }
+
+// Expose a helper to open the current coordinates in Google Maps from the parent component.
+function openGoogleMaps() {
+  const lat = metadata.value?.latitude
+  const lon = metadata.value?.longitude
+  if (lat == null || lon == null) {
+    return
+  }
+  const query = `${lat},${lon}`
+  const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
+  window.open(url, '_blank', 'noopener')
+}
+
+defineExpose({ openGoogleMaps })
 </script>
 
 <template>

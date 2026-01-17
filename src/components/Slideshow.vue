@@ -33,6 +33,9 @@ const photoLength: Ref<number> = ref(0)
 
 const metadataVisible: Ref<boolean> = ref(false)
 
+// Template ref to the Metadata component
+const metadataComp = ref<typeof Metadata | null>(null)
+
 class LoadedPhoto {
   constructor(
     public readonly handle: FileSystemFileHandle,
@@ -78,6 +81,10 @@ function onKeyPress(event: KeyboardEvent) {
       metadataVisible.value = !metadataVisible.value
       break
     }
+    case 'm': {
+      metadataComp.value?.openGoogleMaps()
+      break
+    }
   }
 }
 </script>
@@ -87,6 +94,7 @@ function onKeyPress(event: KeyboardEvent) {
     <div id="counter">{{ currentIndex + 1 }} / {{ photoLength }}</div>
     <Metadata
       v-if="currentPhoto != null"
+      ref="metadataComp"
       :photo-file="currentPhoto.file"
       :class="{ hidden: !metadataVisible }"
     ></Metadata>
