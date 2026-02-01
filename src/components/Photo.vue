@@ -16,6 +16,7 @@ const props = defineProps<{ photoUrl: string }>()
   display: flex;
   justify-content: center;
   align-items: center;
+  user-select: none;
 }
 
 img#photo {

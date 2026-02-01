@@ -267,6 +267,7 @@ dt {
   height: 300px;
   width: 400px;
   border-top-left-radius: 2px;
+  user-select: none;
 }
 .hidden {
   visibility: hidden;
