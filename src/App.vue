@@ -2,24 +2,24 @@
 import { type Ref, ref } from 'vue'
 import Slideshow from './components/Slideshow.vue'
 
-const photos: Ref<FileSystemFileHandle[] | null> = ref(null)
+const medias: Ref<FileSystemFileHandle[] | null> = ref(null)
 const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
 
 async function triggerDirectorySelection() {
   try {
     const dirHandle: FileSystemDirectoryHandle = await window.showDirectoryPicker()
-    const newPhotos: FileSystemFileHandle[] = []
+    const newMedias: FileSystemFileHandle[] = []
     for await (const entry of dirHandle.values()) {
-      if (entry.kind === 'file' && /\.(jpg|jpeg)$/i.test(entry.name)) {
-        newPhotos.push(entry)
+      if (entry.kind === 'file' && /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov|mkv|avi)$/i.test(entry.name)) {
+        newMedias.push(entry)
       }
     }
-    newPhotos.sort((a: FileSystemFileHandle, b: FileSystemFileHandle): number =>
+    newMedias.sort((a: FileSystemFileHandle, b: FileSystemFileHandle): number =>
       collator.compare(a.name, b.name),
     )
 
-    if (newPhotos.length > 0) {
-      photos.value = newPhotos
+    if (newMedias.length > 0) {
+      medias.value = newMedias
     }
   } catch (err) {
     console.error('Error selecting directory:', err)
@@ -28,24 +28,24 @@ async function triggerDirectorySelection() {
 </script>
 
 <template>
-  <div class="center-wrap" v-if="photos == null">
-    <p>Welcome to ShutterShow, a simple but visually appealing photo slideshow app.</p>
-    <p>Select a directory containing JPEG photos to get started.</p>
+  <div class="center-wrap" v-if="medias == null">
+    <p>Welcome to ShutterShow, a simple but visually appealing photo &amp; video slideshow app.</p>
+    <p>Select a directory containing photos (JPEG, PNG, WebP, GIF) or videos (MP4, WebM, MOV, MKV, AVI) to get started.</p>
     <ul>
-      <li>Use <kbd>left arrow</kbd> and <kbd>right arrow</kbd> keys to navigate between photos;</li>
-      <li>Use <kbd>space</kbd> to toggle the photo metadata and map;</li>
+      <li>Use <kbd>left arrow</kbd> and <kbd>right arrow</kbd> keys to navigate between medias;</li>
+      <li>Use <kbd>space</kbd> to toggle the photo metadata and map, or to play/pause a video;</li>
       <li>Use <kbd>M</kbd> to open GoogleMaps at the photo's location.</li>
     </ul>
     <button
       v-on:click="triggerDirectorySelection"
-      v-if="photos == null"
+      v-if="medias == null"
       class="select-dir"
       aria-label="Select photo directory"
     >
       Select directory…
     </button>
   </div>
-  <Slideshow v-if="photos != null" class="slideshow" :photos="photos"></Slideshow>
+  <Slideshow v-if="medias != null" class="slideshow" :photos="medias"></Slideshow>
 </template>
 
 <style scoped>

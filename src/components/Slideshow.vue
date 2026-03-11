@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, type Ref, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, type Ref, ref, watch } from 'vue'
 import Photo from '@/components/Photo.vue'
 import Metadata from '@/components/Metadata.vue'
+import { type LoadedMedia, LoadedPhoto, LoadedVideo, MediaType } from '@/types.ts'
+import Video from '@/components/Video.vue'
 
 const props = defineProps<{ photos: FileSystemFileHandle[] }>()
 
@@ -15,9 +17,9 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKeyPress)
   // Revoke any created object URL for the blurred background
-  if (currentPhoto.value) {
-    URL.revokeObjectURL(currentPhoto.value.url)
-    currentPhoto.value = null
+  if (currentMedia.value) {
+    URL.revokeObjectURL(currentMedia.value.url)
+    currentMedia.value = null
   }
 })
 
@@ -27,36 +29,40 @@ watch(
   { deep: true },
 )
 
-const currentPhoto: Ref<LoadedPhoto | null> = ref(null)
+const currentMedia: Ref<LoadedMedia | null> = ref(null)
 const currentIndex: Ref<number> = ref(0)
-const photoLength: Ref<number> = ref(0)
+const mediaLength: Ref<number> = ref(0)
 
 const metadataVisible: Ref<boolean> = ref(false)
 
 // Template ref to the Metadata component
 const metadataComp = ref<typeof Metadata | null>(null)
+// Template ref to the Video component
+const videoComp = ref<typeof Video | null>(null)
 
-class LoadedPhoto {
-  constructor(
-    public readonly handle: FileSystemFileHandle,
-    public readonly file: File,
-    public readonly url: string,
-  ) {}
-}
+const VIDEO_EXTENSIONS = /\.(mp4|webm|mov|mkv|avi)$/i
 
 function initializeSlideshow() {
-  photoLength.value = props.photos.length
-  if (photoLength.value > 0) {
-    displayPhotoAtIndex(0)
+  mediaLength.value = props.photos.length
+  if (mediaLength.value > 0) {
+    displayMediaAtIndex(0)
   }
 }
-async function displayPhotoAtIndex(index: number) {
-  if (index >= 0 && index < photoLength.value) {
+async function displayMediaAtIndex(index: number) {
+  if (index >= 0 && index < mediaLength.value) {
     const handle = props.photos[index]
     if (!handle) return
+    // Revoke old URL before creating a new one
+    if (currentMedia.value) {
+      URL.revokeObjectURL(currentMedia.value.url)
+    }
     const file = await handle.getFile()
     const url = URL.createObjectURL(file)
-    currentPhoto.value = new LoadedPhoto(handle, file, url)
+    if (VIDEO_EXTENSIONS.test(file.name)) {
+      currentMedia.value = new LoadedVideo(handle, file, url)
+    } else {
+      currentMedia.value = new LoadedPhoto(handle, file, url)
+    }
     currentIndex.value = index
   }
 }
@@ -68,17 +74,22 @@ function onKeyPress(event: KeyboardEvent) {
 
   switch (event.key) {
     case 'ArrowRight': {
-      const nextIndex = (currentIndex.value + 1) % photoLength.value
-      displayPhotoAtIndex(nextIndex)
+      const nextIndex = (currentIndex.value + 1) % mediaLength.value
+      displayMediaAtIndex(nextIndex)
       break
     }
     case 'ArrowLeft': {
-      const prevIndex = (currentIndex.value - 1 + photoLength.value) % photoLength.value
-      displayPhotoAtIndex(prevIndex)
+      const prevIndex = (currentIndex.value - 1 + mediaLength.value) % mediaLength.value
+      displayMediaAtIndex(prevIndex)
       break
     }
     case ' ': {
-      metadataVisible.value = !metadataVisible.value
+      if (currentMedia.value?.mediaType === MediaType.VIDEO) {
+        // Delegate play/pause to the media component
+        videoComp.value?.togglePlayPause()
+      } else {
+        metadataVisible.value = !metadataVisible.value
+      }
       break
     }
     case 'm': {
@@ -91,14 +102,22 @@ function onKeyPress(event: KeyboardEvent) {
 
 <template>
   <div id="wrapper">
-    <div id="counter">{{ currentIndex + 1 }} / {{ photoLength }}</div>
+    <div id="counter">{{ currentIndex + 1 }} / {{ mediaLength }}</div>
     <Metadata
-      v-if="currentPhoto != null"
+      v-if="currentMedia != null && currentMedia.mediaType === MediaType.PHOTO"
       ref="metadataComp"
-      :photo-file="currentPhoto.file"
+      :photo-file="currentMedia.file"
       :class="{ hidden: !metadataVisible }"
     ></Metadata>
-    <Photo v-if="currentPhoto != null" :photo-url="currentPhoto.url"></Photo>
+    <Photo
+      v-if="currentMedia != null && currentMedia.mediaType === MediaType.PHOTO"
+      :photo-url="currentMedia.url"
+    ></Photo>
+    <Video
+      v-if="currentMedia != null && currentMedia.mediaType === MediaType.VIDEO"
+      :video-url="currentMedia.url"
+      ref="videoComp"
+    ></Video>
   </div>
 </template>
 
