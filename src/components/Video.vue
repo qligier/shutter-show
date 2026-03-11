@@ -4,6 +4,19 @@ import { ref } from 'vue'
 const props = defineProps<{ videoUrl: string }>()
 
 const videoElement = ref<HTMLVideoElement | null>(null)
+const firstFrameUri = ref<string | null>(null)
+
+function onLoadedData() {
+  const v = videoElement.value
+  if (!v) return
+  const canvas = document.createElement('canvas')
+  canvas.width = v.videoWidth
+  canvas.height = v.videoHeight
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+  ctx.drawImage(v, 0, 0, canvas.width, canvas.height)
+  firstFrameUri.value = canvas.toDataURL('image/jpeg')
+}
 
 function togglePlayPause() {
   const v = videoElement.value
@@ -20,7 +33,19 @@ defineExpose({ togglePlayPause })
 
 <template>
   <div id="wrapper">
-    <video ref="videoElement" :src="props.videoUrl" autoplay loop controls playsinline></video>
+    <div
+      id="backdrop"
+      :style="firstFrameUri ? { backgroundImage: `url(${firstFrameUri})` } : {}"
+    ></div>
+    <video
+      ref="videoElement"
+      :src="props.videoUrl"
+      autoplay
+      loop
+      controls
+      playsinline
+      @loadeddata="onLoadedData"
+    ></video>
   </div>
 </template>
 
